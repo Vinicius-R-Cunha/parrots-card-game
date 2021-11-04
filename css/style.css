@@ -32,7 +32,7 @@ h1 {
 
 .cards {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
 
     flex-wrap: wrap;
     
@@ -44,21 +44,46 @@ h1 {
 .card {
     width: 117px;
     height: 146px;
+    position: relative;
+}
+
+.face {
+    width: 100%;
+    height: 100%;
     
     background-color: #A7E9AF;
+    
+    box-sizing: border-box;
+    border: 1px solid #99CEA8;
+    border-radius: 5px;
+    box-shadow: 1px 1px 1px rgba(0,0,0,.3);
     
     display: flex;
     justify-content: center;
     align-items: center;
-
-    border: 1px solid #99CEA8;
-    box-sizing: border-box;
-    border-radius: 5px;
+    
+    position: absolute;
+    
+    backface-visibility: hidden;
+    transition: all .5s;
+    transform-style: preserve-3d;
 }
 
-.parrot {
+.images {
     width: 100px;
     height: 100px;
+}
+
+.back-face {
+    transform: rotateY(180deg);
+}
+
+.back-face-click {
+    transform: rotateY(0deg);
+}
+
+.front-face-click {
+    transform: rotateY(-180deg);
 }
 
 @media (max-width: 536px) {
