@@ -1,6 +1,7 @@
 body {
     background-color: #EEF9BF;
     font-family: 'Roboto', sans-serif;  
+    position: relative;
 }
 
 .header {
@@ -28,6 +29,15 @@ h1 {
 
     display: flex;
     justify-content: center;
+}
+
+.timer {
+    font-family: Roboto;
+    font-size: 45px;
+
+    position: absolute;
+    top: -40px;
+    right: 5px;
 }
 
 .cards {
@@ -74,15 +84,15 @@ h1 {
     height: 100px;
 }
 
-.back-face {
+.front-face {
     transform: rotateY(180deg);
 }
 
-.back-face-click {
+.front-face-click {
     transform: rotateY(0deg);
 }
 
-.front-face-click {
+.back-face-click {
     transform: rotateY(-180deg);
 }
 
