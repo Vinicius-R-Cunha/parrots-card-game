@@ -1,13 +1,13 @@
 body {
-    background-color: #EEF9BF;
-    font-family: 'Roboto', sans-serif;  
+    background-color: #eef9bf;
+    font-family: "Roboto", sans-serif;
     position: relative;
 }
 
 .header {
     display: flex;
     justify-content: center;
-    
+
     margin-top: 40px;
     margin-bottom: 47px;
 
@@ -25,7 +25,7 @@ h1 {
     line-height: 66px;
     letter-spacing: -0.004em;
 
-    color: #75B79E;
+    color: #75b79e;
 
     display: flex;
     justify-content: center;
@@ -45,9 +45,9 @@ h1 {
     justify-content: space-evenly;
 
     flex-wrap: wrap;
-    
+
     margin: 0 118px;
-    
+
     gap: 34px;
 }
 
@@ -60,22 +60,22 @@ h1 {
 .face {
     width: 100%;
     height: 100%;
-    
-    background-color: #A7E9AF;
-    
+
+    background-color: #a7e9af;
+
     box-sizing: border-box;
-    border: 1px solid #99CEA8;
+    border: 1px solid #99cea8;
     border-radius: 5px;
-    box-shadow: 1px 1px 1px rgba(0,0,0,.3);
-    
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+
     display: flex;
     justify-content: center;
     align-items: center;
-    
+
     position: absolute;
-    
+
     backface-visibility: hidden;
-    transition: all .5s;
+    transition: all 0.5s;
     transform-style: preserve-3d;
 }
 
@@ -97,14 +97,13 @@ h1 {
 }
 
 @media (max-width: 536px) {
-
-    .header{
-        display: block;
-        margin-bottom: 28px;
+    .header {
+    display: block;
+    margin-bottom: 28px;
     }
 
     h1 {
-        font-size: 36px;
-        line-height: 42px;
+    font-size: 36px;
+    line-height: 42px;
     }
 }

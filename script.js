@@ -1,4 +1,4 @@
-let fullArray = ["media/bobrossparrot.gif","media/explodyparrot.gif","media/fiestaparrot.gif","media/metalparrot.gif","media/revertitparrot.gif","media/tripletsparrot.gif","media/unicornparrot.gif"];
+let fullArray = ["media/bobrossparrot.gif", "media/explodyparrot.gif", "media/fiestaparrot.gif", "media/metalparrot.gif", "media/revertitparrot.gif", "media/tripletsparrot.gif", "media/unicornparrot.gif"];
 
 // crio uma lista baseado no numero de cartas pedida
 let gameArray = [];
@@ -9,7 +9,7 @@ let temporizador = 0;
 
 let idInterval;
 
-const timer = document.querySelector('.timer');
+const timer = document.querySelector(".timer");
 
 function inicioDoJogo() {
 
@@ -18,58 +18,49 @@ function inicioDoJogo() {
 
   // reset das coisas pro proximo jogo
   qntDeFinalizados = 0;
-  contadorDeJogadas = 0;  
-  cards.innerHTML = '';
+  contadorDeJogadas = 0;
+  cards.innerHTML = "";
   gameArray = [];
   timer.innerHTML = 0;
   temporizador = 0;
 
   let numero = 0;
   while (numero < 4 || numero > 14 || numero % 2 === 1) {
-    numero = prompt("Digite o número de cartas (entre 4 e 14)");
+    numero = prompt("Digite o número de cartas (números pares entre 4 e 14)");
   }
 
   // defino quem é o gameArray
-  let contador = 0;
-  while (contador < numero / 2) {
-    gameArray[contador] = fullArray[contador];
-    contador++;
+  for (let i = 0; i < numero / 2; i++) {
+    gameArray[i] = fullArray[i];
   }
 
   // completo a outra metade da lista repetindo os termos
-  contador = 0;
-  while (contador < numero / 2) {
-    gameArray.push(gameArray[contador]);
-    contador++;
+  for (let i = 0; i < numero / 2; i++) {
+    gameArray.push(gameArray[i]);
   }
 
   // e embaralho tudo
   gameArray.sort(comparador);
 
-  contador = 0;
-  while (contador < numero) {
+  for (let i = 0; i < numero; i++) {
     cards.innerHTML += `
         <div class="card" data-identifier="card" onclick="turnCard(this)">
               <div class="back-face face" data-identifier="back-face">
                   <img class="images" src="media/front.png">
               </div>
               <div class="front-face face" data-identifier="front-face">
-                  <img class="images" src=${gameArray[contador]}>
+                  <img class="images" src=${gameArray[i]}>
               </div>
         </div> `;
-
-    contador++;
   }
 
-  
-  idInterval = setInterval(contadorDeTempo,1000);
+  idInterval = setInterval(contadorDeTempo, 1000);
 }
 
 const cards = document.querySelector(".cards");
 let frentes = [];
 // imagens dentro dos versos, para obter o verso eu uso parentNode
 let imagens = [];
-
 
 function turnCard(cartaAtual) {
   const frente = cartaAtual.querySelector(".back-face");
@@ -111,8 +102,7 @@ function turnCard(cartaAtual) {
     contadorDeJogadas++;
 
     setTimeout(alertaFinal, 400);
-    setTimeout(reset,500);
-
+    setTimeout(reset, 500);
   } else {
     //se for diferente da anterior
 
@@ -158,21 +148,20 @@ inicioDoJogo();
 
 function alertaFinal() {
   if (qntDeFinalizados === gameArray.length / 2) {
-    clearInterval(idInterval)
+    clearInterval(idInterval);
     let tempoFinal = timer.innerHTML;
     alert(`Você ganhou em ${contadorDeJogadas} jogadas e em ${tempoFinal} segundos!`);
   }
 }
 
-
 function reset() {
-  let recomecar = '';
+  let recomecar = "";
   if (qntDeFinalizados === gameArray.length / 2) {
-    recomecar = prompt('Deseja recomeçar o jogo? (s ou n): ');
+    recomecar = prompt("Deseja recomeçar o jogo? (s ou n): ");
 
-    if (recomecar === 'n') {
+    if (recomecar === "n") {
       return;
-    } else if (recomecar === 's') {
+    } else if (recomecar === "s") {
       inicioDoJogo();
     } else {
       reset();
