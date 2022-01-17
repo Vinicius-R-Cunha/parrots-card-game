@@ -1,50 +1,30 @@
-let fullArray = ["media/bobrossparrot.gif", "media/explodyparrot.gif", "media/fiestaparrot.gif", "media/metalparrot.gif", "media/revertitparrot.gif", "media/tripletsparrot.gif", "media/unicornparrot.gif"];
-
-// crio uma lista baseado no numero de cartas pedida
+let fullArray = [
+  "media/bobrossparrot.gif",
+  "media/explodyparrot.gif",
+  "media/fiestaparrot.gif",
+  "media/metalparrot.gif",
+  "media/revertitparrot.gif",
+  "media/tripletsparrot.gif",
+  "media/unicornparrot.gif"
+];
 let gameArray = [];
-
-let qntDeFinalizados = 0;
-let contadorDeJogadas = 0;
-let temporizador = 0;
-
+let finishedNumber = 0;
+let playCounter = 0;
+let timerCounter = 0;
 let idInterval;
-
+let numberOfCards = 0;
 const timer = document.querySelector(".timer");
 
-function inicioDoJogo() {
-
-  fullArray.sort(comparador);
+function beginGame() {
+  fullArray.sort(randomizer);
   const cards = document.querySelector(".cards");
 
-  // reset das coisas pro proximo jogo
-  qntDeFinalizados = 0;
-  contadorDeJogadas = 0;
-  cards.innerHTML = "";
-  gameArray = [];
-  timer.innerHTML = 0;
-  temporizador = 0;
+  resetVariables();
+  setGameArray();
 
-  let numero = 0;
-  while (numero < 4 || numero > 14 || numero % 2 === 1) {
-    numero = prompt("Digite o número de cartas (números pares entre 4 e 14)");
-  }
-
-  // defino quem é o gameArray
-  for (let i = 0; i < numero / 2; i++) {
-    gameArray[i] = fullArray[i];
-  }
-
-  // completo a outra metade da lista repetindo os termos
-  for (let i = 0; i < numero / 2; i++) {
-    gameArray.push(gameArray[i]);
-  }
-
-  // e embaralho tudo
-  gameArray.sort(comparador);
-
-  for (let i = 0; i < numero; i++) {
+  for (let i = 0; i < numberOfCards; i++) {
     cards.innerHTML += `
-        <div class="card" data-identifier="card" onclick="turnCard(this)">
+        <div class="card" data-identifier="card" onclick="handleTurns(this)">
               <div class="back-face face" data-identifier="back-face">
                   <img class="images" src="media/front.png">
               </div>
@@ -54,115 +34,124 @@ function inicioDoJogo() {
         </div> `;
   }
 
-  idInterval = setInterval(contadorDeTempo, 1000);
+  idInterval = setInterval(handleTimer, 1000);
+}
+
+function resetVariables() {
+  finishedNumber = 0;
+  playCounter = 0;
+  cards.innerHTML = "";
+  gameArray = [];
+  timer.innerHTML = 0;
+  timerCounter = 0;
+}
+
+function setGameArray() {
+  while (numberOfCards < 4 || numberOfCards > 14 || numberOfCards % 2 === 1 || isNaN(parseInt(numberOfCards))) {
+    numberOfCards = prompt("Digite o número de cartas (números pares entre 4 e 14)");
+  }
+  for (let i = 0; i < numberOfCards / 2; i++) {
+    gameArray[i] = fullArray[i];
+  }
+  for (let i = 0; i < numberOfCards / 2; i++) {
+    gameArray.push(gameArray[i]);
+  }
+  gameArray.sort(randomizer);
 }
 
 const cards = document.querySelector(".cards");
-let frentes = [];
-// imagens dentro dos versos, para obter o verso eu uso parentNode
-let imagens = [];
+let frontArray = [];
+let imagesArray = [];
 
-function turnCard(cartaAtual) {
-  const frente = cartaAtual.querySelector(".back-face");
-  const verso = cartaAtual.querySelector(".front-face");
+function handleTurns(currentCard) {
+  const front = currentCard.querySelector(".back-face");
+  const verse = currentCard.querySelector(".front-face");
 
-  if (
-    frente.classList.contains("finalizado") ||
-    cards.classList.contains("espera")
-  ) {
-    // nao altera clicar em quem ja foi finalizado
+  if (front.classList.contains("finished") || cards.classList.contains("wait")) {
     return;
-  } else if (frentes[0] === undefined) {
-    // responsavel pelo clique da primeira carta do par
-    // contador ímpar e lista frentes sem nada dentro
 
-    verso.classList.add("front-face-click");
-    frente.classList.add("back-face-click");
+  } else if (frontArray[0] === undefined) {
+    turnCard(front, verse);
 
-    frentes[0] = frente;
-    imagens[0] = verso.querySelector("img");
+    frontArray[0] = front;
+    imagesArray[0] = verse.querySelector("img");
 
-    contadorDeJogadas++;
-  } else if (imagens[0].parentNode === verso) {
-    // Se o pai da imagem anterior (verso da imagem anterior) for igual o verso atual n faz nada
+    playCounter++;
+  } else if (imagesArray[0].parentNode === verse) {
     return;
-  } else if (imagens[0].src === verso.querySelector("img").src) {
-    // se a imagem for igual a anterior e o pai(verso) diferente da anterior
 
-    verso.classList.add("front-face-click");
-    frente.classList.add("back-face-click");
+  } else if (imagesArray[0].src === verse.querySelector("img").src) {
+    turnCard(front, verse);
 
-    frentes[0].classList.add("finalizado");
-    frente.classList.add("finalizado");
+    frontArray[0].classList.add("finished");
+    front.classList.add("finished");
 
-    frentes = [];
-    imagens = [];
+    resetArrays();
 
-    qntDeFinalizados++;
-    contadorDeJogadas++;
+    finishedNumber++;
+    playCounter++;
 
-    setTimeout(alertaFinal, 400);
+    setTimeout(finalAlert, 400);
     setTimeout(reset, 500);
+
   } else {
-    //se for diferente da anterior
+    turnCard(front, verse);
+    cards.classList.add("wait");
 
-    // vira a "segunda" carta pra ver o conteudo
-    verso.classList.add("front-face-click");
-    frente.classList.add("back-face-click");
+    setTimeout(unturnCards, 1000, imagesArray[0], frontArray[0], verse, front);
 
-    // nao deixa nada ser clicado enquanto nao desvirar as cartas
-    cards.classList.add("espera");
+    resetArrays();
 
-    setTimeout(desviraAsCartas, 1000, imagens[0], frentes[0], verso, frente);
-
-    frentes = [];
-    imagens = [];
-
-    contadorDeJogadas++;
+    playCounter++;
   }
 }
 
-function comparador() {
+function turnCard(front, verse) {
+  verse.classList.add("front-face-click");
+  front.classList.add("back-face-click");
+}
+
+function resetArrays() {
+  frontArray = [];
+  imagesArray = [];
+}
+
+function randomizer() {
   return Math.random() - 0.5;
 }
 
-function desviraAsCartas(var1, var2, var3, var4) {
-  // vira a carta anterior de volta
+function unturnCards(var1, var2, var3, var4) {
   var1.parentNode.classList.remove("front-face-click");
   var2.classList.remove("back-face-click");
-
-  // vira a carta atual de volta
   var3.classList.remove("front-face-click");
   var4.classList.remove("back-face-click");
-
-  // removo a espera
-  cards.classList.remove("espera");
+  cards.classList.remove("wait");
 }
 
-function contadorDeTempo() {
-  temporizador++;
-  timer.innerHTML = temporizador;
+function handleTimer() {
+  timerCounter++;
+  timer.innerHTML = timerCounter;
 }
 
-inicioDoJogo();
+beginGame();
 
-function alertaFinal() {
-  if (qntDeFinalizados === gameArray.length / 2) {
+function finalAlert() {
+  if (finishedNumber === gameArray.length / 2) {
     clearInterval(idInterval);
-    let tempoFinal = timer.innerHTML;
-    alert(`Você ganhou em ${contadorDeJogadas} jogadas e em ${tempoFinal} segundos!`);
+    let finalTime = timer.innerHTML;
+    alert(`Você ganhou em ${playCounter} jogadas e em ${finalTime} segundos!`);
   }
 }
 
 function reset() {
-  let recomecar = "";
-  if (qntDeFinalizados === gameArray.length / 2) {
-    recomecar = prompt("Deseja recomeçar o jogo? (s ou n): ");
+  let restartPrompt = "";
+  if (finishedNumber === gameArray.length / 2) {
+    restartPrompt = prompt("Deseja recomeçar o jogo? (s ou n): ");
 
-    if (recomecar === "n") {
+    if (restartPrompt === "n") {
       return;
-    } else if (recomecar === "s") {
-      inicioDoJogo();
+    } else if (restartPrompt === "s") {
+      beginGame();
     } else {
       reset();
     }
